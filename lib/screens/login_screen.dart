@@ -1,9 +1,67 @@
 import 'package:covid_dashboard/Widgets/info_card.dart';
 import 'package:covid_dashboard/Widgets/line_chart.dart';
 import 'package:covid_dashboard/constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:firebase_core/firebase_core.dart';
+
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(App());
+}
+
+class App extends StatefulWidget {
+  _AppState createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  // Set default `_initialized` and `_error` state to false
+  bool _initialized = false;
+  bool _error = false;
+
+  // Define an async function to initialize FlutterFire
+  void initializeFlutterFire() async {
+    try {
+      // Wait for Firebase to initialize and set `_initialized` state to true
+      await Firebase.initializeApp();
+      setState(() {
+        _initialized = true;
+      });
+    } catch(e) {
+      // Set `_error` state to true if Firebase initialization fails
+      setState(() {
+        _error = true;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    initializeFlutterFire();
+    super.initState();
+  }
+
+  @override
+    Widget build(BuildContext context) {
+      // Show error message if initialization failed
+      if(_error) {
+        return Second();
+      }
+
+      // Show a loader until FlutterFire is initialized
+      if (!_initialized) {
+        return LoginScreen();
+      }
+
+      return LoginScreen();
+    }
+}
+
+FirebaseAuth auth = FirebaseAuth.instance;
+
 
 
 class LoginScreen extends StatefulWidget{
@@ -11,6 +69,15 @@ class LoginScreen extends StatefulWidget{
   State<StatefulWidget> createState()=> new_State();
 }
 class new_State extends State <LoginScreen>{
+final user = TextEditingController();
+final pass = TextEditingController();
+@override
+void dispose() {
+  // Clean up the controller when the widget is disposed.
+  user.dispose();
+  pass.dispose();
+  super.dispose();
+}
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +112,7 @@ class new_State extends State <LoginScreen>{
               ),
               SizedBox(height: 30.0,),
               TextField(
+                controller: user,
                 decoration: InputDecoration(
                   hintText: 'Email',
                   suffixIcon: Icon(Icons.email),
@@ -55,6 +123,7 @@ class new_State extends State <LoginScreen>{
               ),
               SizedBox(height: 20.0,),
               TextField(
+                controller: pass,
                 obscureText: true,
                 decoration: InputDecoration(
                   hintText: 'Password',
@@ -74,7 +143,7 @@ class new_State extends State <LoginScreen>{
                     RaisedButton(
                       child: Text('Login'),
                       color: Colors.red.shade400,
-                      onPressed: (){},
+                      onPressed: (){login(user,pass);},
                     ),
                   ],
                 ),
@@ -98,8 +167,6 @@ class new_State extends State <LoginScreen>{
                   ),
                 ),
               ),
-
-
             ],
           ),
         ),
@@ -113,6 +180,15 @@ class Second extends StatefulWidget {
 }
 
 class _SecondState extends State<Second> {
+  final user = TextEditingController();
+  final pass = TextEditingController();
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    user.dispose();
+    pass.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     double width=MediaQuery.of(context).size.width;
@@ -141,8 +217,9 @@ class _SecondState extends State<Second> {
               ),
               SizedBox(height: 30.0,),
               TextField(
+                controller: user,
                 decoration: InputDecoration(
-                  hintText: 'Email or SSO',
+                  hintText: 'Email',
                   suffixIcon: Icon(Icons.email),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20.0),
@@ -151,6 +228,7 @@ class _SecondState extends State<Second> {
               ),
               SizedBox(height: 20.0,),
               TextField(
+                controller: pass,
                 obscureText: true,
                 decoration: InputDecoration(
                   hintText: 'Password',
@@ -170,7 +248,7 @@ class _SecondState extends State<Second> {
                     RaisedButton(
                       child: Text('Signup'),
                       color: Color(0xfff29256),
-                      onPressed: (){},
+                      onPressed: (){signUp(user, pass);},
                     ),
                   ],
                 ),
@@ -202,4 +280,39 @@ class _SecondState extends State<Second> {
       ),
     );
   }
+}
+
+
+Future<void> signUp(TextEditingController user, TextEditingController pass)
+async {
+  try {
+    UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: "kag194@miami.edu",
+        password: "password",
+    );
+  } on FirebaseAuthException catch (e) {
+    if (e.code == 'weak-password') {
+      print('The password provided is too weak.');
+    } else if (e.code == 'email-already-in-use') {
+      print('The account already exists for that email.');
+    }
+  } catch (e) {
+    print(e);
+  }
+}
+Future<void> login(TextEditingController user, TextEditingController pass)
+async {
+  try {
+    UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: user.text,
+        password: pass.text,
+    );
+  } on FirebaseAuthException catch (e) {
+    if (e.code == 'user-not-found') {
+      print('No user found for that email.');
+    } else if (e.code == 'wrong-password') {
+      print('Wrong password provided for that user.');
+    }
+  }
+
 }

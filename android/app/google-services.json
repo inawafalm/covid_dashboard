@@ -1,41 +1,34 @@
 {
   "project_info": {
-    "project_number": "910921620263",
-    "project_id": "covid-a646e",
-    "storage_bucket": "covid-a646e.appspot.com"
+    "project_number": "321960720484",
+    "project_id": "coviddashboard-4ec2d",
+    "storage_bucket": "coviddashboard-4ec2d.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:910921620263:android:091253cc166528a6ece702",
+        "mobilesdk_app_id": "1:321960720484:android:3f0541b0909c573c6e0771",
         "android_client_info": {
           "package_name": "com.example.covid_dashboard"
         }
       },
       "oauth_client": [
         {
-          "client_id": "910921620263-3hqvo118f35805dqla8jcc9m0lclgsga.apps.googleusercontent.com",
+          "client_id": "321960720484-90sjq55ruj86t56po8cvq7dpse9u79vg.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBf4xAHRJbzUFsISXwSM8-jl3Au9iKBwoI"
+          "current_key": "AIzaSyASmOYUa810WTXWycsS3ByDwTzH8FOeGYc"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "910921620263-3hqvo118f35805dqla8jcc9m0lclgsga.apps.googleusercontent.com",
+              "client_id": "321960720484-90sjq55ruj86t56po8cvq7dpse9u79vg.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "910921620263-ih2idnqfpreqg63qmgt1hsmquskodkoa.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.covidDashboard"
-              }
             }
           ]
         }
